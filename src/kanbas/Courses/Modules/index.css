@@ -1,0 +1,23 @@
+button,
+#wd-course-modules-publish {
+  border: 2px solid black; 
+  padding: 10px 15px;      
+  background-color: lightgray; 
+  font-size: 16px;         
+  cursor: pointer;         
+}
+
+#wd-course-modules-publish {
+  appearance: none; 
+  -webkit-appearance: none; 
+  -moz-appearance: none; 
+}
+
+select:focus, button:focus {
+  outline: none; 
+}
+
+#wd-course-modules-publish {
+  width: auto; 
+}
+
