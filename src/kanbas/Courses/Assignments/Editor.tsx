@@ -280,7 +280,7 @@ export default function AssignmentEditor() {
                     <input
                       id="wd-available-until"
                       type="datetime-local"
-                      value="2024-10-03T021:01"
+                      value="2024-10-03T21:01"
                       style={{ width: "100%" }}
                     />
                   </div>
