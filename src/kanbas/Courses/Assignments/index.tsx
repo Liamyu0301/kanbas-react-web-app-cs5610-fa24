@@ -28,7 +28,7 @@ export default function Assignments() {
   };
 
   const deleteButton = (assignmentId: string) => {
-    if (window.confirm("Are you sure you want to delete this assignment?")) {
+    if (window.confirm("Please make sure to delete this assignment")) {
       dispatch(deleteAssignment(assignmentId));
     }
   };
@@ -124,7 +124,6 @@ export default function Assignments() {
                 className="wd-lesson list-group-item p-3 ps-1"
               >
                 <div className="d-flex align-items-start justify-content-between">
-                  {/* 图标和标题 */}
                   <div className="d-flex align-items-center me-3">
                     <BsGripVertical className="me-2 fs-3" />
                     <MdAssignmentAdd className="me-2 text-success fs-4" />
