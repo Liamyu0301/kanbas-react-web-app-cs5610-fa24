@@ -1,20 +1,93 @@
 import { BsGripVertical } from "react-icons/bs";
 import GreenCheckmark from "../Modules/GreenCheckmark";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaTrash, FaMagnifyingGlass } from "react-icons/fa6";
 import { MdAssignmentAdd } from "react-icons/md";
-import PercentageButton from "./AssignmentButtons";
-import AssignmentControls from "./AssignmentControls";
+// import PercentageButton from "./AssignmentButtons";
+// import AssignmentControls from "./AssignmentControls";
 import { FaChevronDown } from "react-icons/fa";
-import { useParams, Link } from "react-router-dom";
-import * as db from "../../Database";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
+// import * as db from "../../Database";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const assignments = useSelector((state: any) =>
+    state.assignmentsReducer.assignments.filter(
+      (assignment: any) => assignment.course === cid
+    )
+  );
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const isFaculty = currentUser?.role === "FACULTY";
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const AddAssignmentClick = () => {
+    navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
+  };
+
+  const deleteButton = (assignmentId: string) => {
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
   return (
-    <div>
-      <AssignmentControls />
+    <div id="wd-assignments" className="text-nowrap">
+      <div id="wd-modules-controls" className="text-nowrap">
+        {isFaculty && (
+          <>
+            <button
+              id="wd-add-module-btn"
+              className="btn btn-lg btn-danger me-1 float-end"
+              onClick={AddAssignmentClick}
+            >
+              <FaPlus
+                className="position-relative me-2"
+                style={{ bottom: "1px" }}
+              />
+              Assignment
+            </button>
+            <div className="dropdown d-inline me-1 float-end">
+              <button
+                id="wd-publish-all-btn"
+                className="btn btn-lg btn-secondary"
+                type="button"
+              >
+                <FaPlus
+                  className="position-relative me-2"
+                  style={{ bottom: "1px" }}
+                />
+                Group
+              </button>
+            </div>
+          </>
+        )}
+        {}
+        <div
+          className="me-1"
+          style={{ position: "relative", display: "inline-block" }}
+        >
+          <FaMagnifyingGlass
+            style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none",
+              color: "#aaa",
+            }}
+          />
+          <input
+            id="wd-search-assignment"
+            className="form-control form-control-lg"
+            placeholder="Search..."
+            style={{
+              paddingLeft: "35px",
+            }}
+          />
+        </div>
+      </div>
       <br />
       <br />
       <ul id="wd-assignment" className="list-group rounded-0">
@@ -23,55 +96,68 @@ export default function Assignments() {
             <div className="d-flex align-items-center">
               <BsGripVertical className="me-2 fs-3" />
               <FaChevronDown className="me-2 fs-5" />
-              <span>ASSIGNMENTS</span>
+              <span className="fw-bold">ASSIGNMENTS</span>
             </div>
             <div className="d-flex align-items-center">
-              <PercentageButton />
-              <FaPlus className="me-3" />
-              <IoEllipsisVertical className="fs-4" />
+              <p
+                className="wd-rounded-corners-all-around wd-border-solid m-0"
+                style={{
+                  display: "inline-block",
+                  padding: "2px 6px",
+                  marginRight: "10px",
+                }}
+              >
+                40% of Total
+              </p>
+              {isFaculty && (
+                <>
+                  <FaPlus className="fs-4 me-2" />
+                  <IoEllipsisVertical className="fs-4" />
+                </>
+              )}
             </div>
           </div>
-
-          {/* Lesson List */}
           <ul className="wd-lessons list-group rounded-0">
-            {assignments
-              .filter((assignment: any) => assignment.course === cid)
-              .map((assignment: any) => (
-                <li className="wd-lesson list-group-item p-3 ps-1">
-                  <div className="d-flex align-items-start justify-content-between">
-                    {/* Icon and Title */}
-                    <div className="d-flex align-items-center me-3">
-                      <BsGripVertical className="me-2 fs-3" />
-                      <MdAssignmentAdd className="me-2 text-success fs-4" />
-                      <div>
-                        <Link
-                          className="wd-assignment-link"
-                          to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                        >
-                          <div className="fw-bold">{assignment._id}</div>
-                        </Link>
-                        <div className="text-muted small mt-1">
-                          <span>
-                            <span className="text-danger">
-                              Multiple Modules
-                            </span>{" "}
-                            |
-                            <span className="fw-bold">
-                              {" "}
-                              Not available until
-                            </span>{" "}
-                            May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts
-                          </span>
-                        </div>
+            {assignments.map((assignment: any) => (
+              <li
+                key={assignment._id}
+                className="wd-lesson list-group-item p-3 ps-1"
+              >
+                <div className="d-flex align-items-start justify-content-between">
+                  {/* 图标和标题 */}
+                  <div className="d-flex align-items-center me-3">
+                    <BsGripVertical className="me-2 fs-3" />
+                    <MdAssignmentAdd className="me-2 text-success fs-4" />
+                    <div>
+                      <Link
+                        className="wd-assignment-link"
+                        to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                      >
+                        <div className="fw-bold">{assignment.title}</div>
+                      </Link>
+                      <div className="text-muted small mt-1">
+                        <span>
+                          <span className="text-danger">Multiple Modules</span>{" "}
+                          |<b> Not available until</b>{" "}
+                          {assignment.available_date} | Due{" "}
+                          {assignment.due_date} | {assignment.points} pts
+                        </span>
                       </div>
                     </div>
+                  </div>
+                  {isFaculty && (
                     <div className="d-flex align-items-center">
+                      <FaTrash
+                        className="text-danger me-2 mb-1"
+                        onClick={() => deleteButton(assignment._id)}
+                      />
                       <GreenCheckmark />
                       <IoEllipsisVertical className="ms-2 fs-5" />
                     </div>
-                  </div>
-                </li>
-              ))}
+                  )}
+                </div>
+              </li>
+            ))}
           </ul>
         </li>
       </ul>
