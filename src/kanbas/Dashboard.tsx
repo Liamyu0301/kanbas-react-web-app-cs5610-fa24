@@ -19,6 +19,7 @@ export default function Dashboard({
   // course,
   setCourse,
   // addNewCourse,
+  //abc
   deleteCourse,
   updateCourse,
   fetchCourses,
