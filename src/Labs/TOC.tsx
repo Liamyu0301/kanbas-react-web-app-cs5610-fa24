@@ -83,7 +83,7 @@ export default function TOC() {
           href="https://kanbas-node-server-app-koou.onrender.com"
           className="nav-link"
         >
-          My Render
+          My Render Link
         </a>
       </li>
       <li className="nav-item">
@@ -92,7 +92,7 @@ export default function TOC() {
           href="https://kanbas-node-server-app-mengli-28c7de99e16b.herokuapp.com"
           className="nav-link"
         >
-          My Heroku
+          My Heroku Link
         </a>
       </li>
     </ul>
