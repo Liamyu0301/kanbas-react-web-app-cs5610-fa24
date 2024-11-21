@@ -1,33 +1,24 @@
 import { Routes, Route, Navigate } from "react-router";
 import Account from "./Account";
-import Courses from "./Courses";
 import Dashboard from "./Dashboard";
 import KanbasNavigation from "./Navigation";
-import Session from "./Account/Session";
-import * as enrollmentClient from "./enrollment/client";
-
-import {
-  enrollInCourse,
-  unenrollFromCourse,
-  setEnrollments,
-} from "./enrollment/reducer";
+import Courses from "./Courses";
 import "./styles.css";
-import { useEffect, useState } from "react";
-// import * as db from "./Database";
+import { useState, useEffect } from "react";
+import store from "./store";
+import { Provider } from "react-redux";
+import ProtectedRoute from "./Account/ProtectedRoute";
+import Session from "./Account/Session";
 import * as client from "./Courses/client";
 import * as userClient from "./Account/client";
+import { useSelector } from "react-redux";
 import * as courseClient from "./Courses/client";
-// import store from "./store";
-import { useSelector, useDispatch } from "react-redux";
-import ProtectedRoute from "./Account/ProtectedRoute";
-import { enrollments } from "./Database";
-export default function Kanbas() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const dispatch = useDispatch();
 
+function KanbasContent() {
+  const [courses, setCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [course, setCourse] = useState<any>({
-    _id: "0",
+    _id: "1234",
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
@@ -36,22 +27,23 @@ export default function Kanbas() {
     description: "New Description",
   });
 
-  const addNewCourse = async () => {
-    // const newCourse = {
-    //   ...course,
-    //   _id: new Date().getTime().toString(),
-    //   image: "/images/reactjs.jpg",
-    // };
-    const newCourse = await userClient.createCourse(course);
-    await fetchCourses();
-    setCourses([...courses, newCourse]);
-    console.log(newCourse, courses, "newwwwwwc");
+  const fetchCourses = async () => {
+    let courses = [];
+    try {
+      courses = await userClient.findMyCourses();
+    } catch (error) {
+      console.error(error);
+    }
+    setCourses(courses);
+  };
 
-    const enrollment = await enrollmentClient.enrollInCourse(
-      currentUser._id,
-      newCourse._id
-    );
-    dispatch(enrollInCourse(enrollment));
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
+  const addNewCourse = async () => {
+    const newCourse = await userClient.createCourse(course);
+    setCourses([...courses, newCourse]);
   };
 
   const deleteCourse = async (courseId: string) => {
@@ -72,28 +64,14 @@ export default function Kanbas() {
     );
   };
 
-  const fetchCourses = async () => {
-    let courses = [];
-    try {
-      courses = await courseClient.fetchAllCourses();
-    } catch (error) {
-      console.error(error);
-    }
-    setCourses(courses);
-  };
-  useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
-
   return (
-    // <Provider store={store}>
     <Session>
       <div id="wd-kanbas">
         <KanbasNavigation />
         <div className="wd-main-content-offset p-3">
           <Routes>
-            <Route path="/" element={<Navigate to="Account" />} />
-            <Route path="/Account/*" element={<Account />} />
+            <Route path="/" element={<Navigate to="Dashboard" replace />} />
+            <Route path="Account/*" element={<Account />} />
             <Route
               path="Dashboard"
               element={
@@ -101,7 +79,6 @@ export default function Kanbas() {
                   <Dashboard
                     courses={courses}
                     course={course}
-                    setCourses={setCourses}
                     setCourse={setCourse}
                     addNewCourse={addNewCourse}
                     deleteCourse={deleteCourse}
@@ -112,19 +89,25 @@ export default function Kanbas() {
               }
             />
             <Route
-              path="/Courses/:cid/*"
+              path="Courses/:cid/*"
               element={
                 <ProtectedRoute>
                   <Courses courses={courses} />
                 </ProtectedRoute>
               }
             />
-            <Route path="/Calendar" element={<h1>Calendar</h1>} />
-            <Route path="/Inbox" element={<h1>Inbox</h1>} />
+            <Route path="Calendar" element={<h1>Calendar</h1>} />
+            <Route path="Inbox" element={<h1>Inbox</h1>} />
           </Routes>
         </div>
       </div>
     </Session>
-    // </Provider>
+  );
+}
+export default function Kanbas() {
+  return (
+    <Provider store={store}>
+      <KanbasContent />
+    </Provider>
   );
 }
