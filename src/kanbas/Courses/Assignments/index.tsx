@@ -8,7 +8,10 @@ import { MdAssignmentAdd } from "react-icons/md";
 import { FaChevronDown } from "react-icons/fa";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments, addAssignment } from "./reducer";
+import { useEffect, useState } from "react";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 // import * as db from "../../Database";
 
 export default function Assignments() {
@@ -22,16 +25,48 @@ export default function Assignments() {
   const isFaculty = currentUser?.role === "FACULTY";
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [assignmentTitle, setAssignmentTitle] = useState("");
 
-  const AddAssignmentClick = () => {
+  const fetchAssignments = async () => {
+    const assignmentsData = await coursesClient.findAssignmentsForCourse(
+      cid as string
+    );
+    dispatch(setAssignments(assignmentsData));
+  };
+
+  const createAssignmentForCourse = async () => {
+    if (!cid) return;
+    // const newAssignment = { title: assignmentTitle, course: cid };
+    // // const assignment = await coursesClient.createAssignmentForCourse(
+    // //   cid,
+    // //   newAssignment
+    // // );
+    // dispatch(addAssignment(assignment));
+    // setAssignmentTitle("");
     navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
   };
 
-  const deleteButton = (assignmentId: string) => {
+  const removeAssignment = async (assignmentId: string) => {
     if (window.confirm("Please make sure to delete this assignment")) {
+      await assignmentsClient.deleteAssignment(assignmentId);
       dispatch(deleteAssignment(assignmentId));
     }
   };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid, dispatch]);
+
+  // const AddAssignmentClick = () => {
+  //   navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
+  // };
+
+  // const deleteButton = (assignmentId: string) => {
+  //   if (window.confirm("Please make sure to delete this assignment")) {
+  //     dispatch(deleteAssignment(assignmentId));
+  //   }
+  // };
+
   return (
     <div id="wd-assignments" className="text-nowrap">
       <div id="wd-modules-controls" className="text-nowrap">
@@ -40,7 +75,7 @@ export default function Assignments() {
             <button
               id="wd-add-module-btn"
               className="btn btn-lg btn-danger me-1 float-end"
-              onClick={AddAssignmentClick}
+              onClick={createAssignmentForCourse}
             >
               <FaPlus
                 className="position-relative me-2"
@@ -148,7 +183,7 @@ export default function Assignments() {
                     <div className="d-flex align-items-center">
                       <FaTrash
                         className="text-danger me-2 mb-1"
-                        onClick={() => deleteButton(assignment._id)}
+                        onClick={() => removeAssignment(assignment._id)}
                       />
                       <GreenCheckmark />
                       <IoEllipsisVertical className="ms-2 fs-5" />

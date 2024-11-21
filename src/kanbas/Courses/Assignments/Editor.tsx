@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
+import * as coursesClient from "../client";
 // import * as db from "../../Database";
 
 // const options = [
@@ -35,14 +37,22 @@ export default function AssignmentEditor() {
     }
   }, [aid, existAssignment]);
 
-  const Save = () => {
+  const Save = async () => {
     if (aid === "new") {
-      dispatch(addAssignment(assignment));
+      const newAssignment = await coursesClient.createAssignmentForCourse(
+        cid as string,
+        assignment
+      );
+      dispatch(addAssignment(newAssignment));
     } else {
-      dispatch(updateAssignment(assignment));
+      const updatedAssignment = await assignmentsClient.updateAssignment(
+        assignment
+      );
+      dispatch(updateAssignment(updatedAssignment));
     }
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
+
   return (
     <div id="wd-assignments-editor">
       <div className="mb-3">

@@ -46,6 +46,15 @@ export default function TOC() {
         </a>
       </li>
       <li className="nav-item">
+        <a
+          id="wd-a5"
+          href="#/Labs/Lab5"
+          className={`nav-link ${pathname.includes("Lab5") ? "active" : ""}`}
+        >
+          Lab 5
+        </a>
+      </li>
+      <li className="nav-item">
         <a id="wd-k" href="#/Kanbas" className="nav-link">
           Kanbas
         </a>
@@ -56,7 +65,34 @@ export default function TOC() {
           href="https://github.com/Liamyu0301/kanbas-react-web-app-cs5610-fa24"
           className="nav-link"
         >
-          My GitHub
+          My GitHub Repository to Client
+        </a>
+      </li>
+      <li className="nav-item">
+        <a
+          id="wd-k"
+          href="https://github.com/Liamyu0301/kanbas-node-server-app"
+          className="nav-link"
+        >
+          My GitHub Repository to Server
+        </a>
+      </li>
+      <li className="nav-item">
+        <a
+          id="wd-k"
+          href="https://kanbas-node-server-app-koou.onrender.com"
+          className="nav-link"
+        >
+          My Render
+        </a>
+      </li>
+      <li className="nav-item">
+        <a
+          id="wd-k"
+          href="https://kanbas-node-server-app-mengli-28c7de99e16b.herokuapp.com"
+          className="nav-link"
+        >
+          My Heroku
         </a>
       </li>
     </ul>
