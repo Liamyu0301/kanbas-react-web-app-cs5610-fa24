@@ -30,7 +30,7 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
             //       enrollment.user === usr._id && enrollment.course === cid
             //   )
             // )
-            .map((user) => (
+            .map((user: any) => (
               <tr>
                 <td className="wd-full-name text-nowrap">
                   <Link
