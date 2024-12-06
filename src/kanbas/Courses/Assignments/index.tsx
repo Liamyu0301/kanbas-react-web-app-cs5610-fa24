@@ -12,7 +12,6 @@ import { deleteAssignment, setAssignments, addAssignment } from "./reducer";
 import { useEffect, useState } from "react";
 import * as coursesClient from "../client";
 import * as assignmentsClient from "./client";
-// import * as db from "../../Database";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -36,19 +35,12 @@ export default function Assignments() {
 
   const createAssignmentForCourse = async () => {
     if (!cid) return;
-    // const newAssignment = { title: assignmentTitle, course: cid };
-    // // const assignment = await coursesClient.createAssignmentForCourse(
-    // //   cid,
-    // //   newAssignment
-    // // );
-    // dispatch(addAssignment(assignment));
-    // setAssignmentTitle("");
     navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
   };
 
   const removeAssignment = async (assignmentId: string) => {
     if (window.confirm("Please make sure to delete this assignment")) {
-      await assignmentsClient.deleteAssignment(assignmentId);
+      await assignmentsClient.deleteAssignment(assignmentId, cid as string);
       dispatch(deleteAssignment(assignmentId));
     }
   };
@@ -56,16 +48,6 @@ export default function Assignments() {
   useEffect(() => {
     fetchAssignments();
   }, [cid, dispatch]);
-
-  // const AddAssignmentClick = () => {
-  //   navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
-  // };
-
-  // const deleteButton = (assignmentId: string) => {
-  //   if (window.confirm("Please make sure to delete this assignment")) {
-  //     dispatch(deleteAssignment(assignmentId));
-  //   }
-  // };
 
   return (
     <div id="wd-assignments" className="text-nowrap">

@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
-// import Select from "react-select";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
 import * as assignmentsClient from "./client";
 import * as coursesClient from "../client";
-// import * as db from "../../Database";
-
-// const options = [
-//   { value: "Everyone", label: "Everyone" },
-//   { value: "Students", label: "Students" },
-//   { value: "Teachers", label: "Teachers" },
-// ];
 
 export default function AssignmentEditor() {
   const { aid, cid } = useParams();
